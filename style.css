@@ -3,3 +3,19 @@ body {
   margin: auto;
   padding: 20px;
 }
+
+#output {
+    margin-top: 40px;
+}
+
+#output div {
+  border: 1px solid grey;
+  padding: 10px;
+  margin: 5px 0;
+  padding-left: 20px;
+}
+
+h3 {
+  margin-top: 0px;
+  margin-bottom: 5px;
+}
