@@ -26,6 +26,8 @@ function goBtnHandler() {
     displayByName();
   } else if (selection === 'display-country') {
     displayByCountry();
+  } else if (selection === 'display-email') {
+    displayByEmail();
   }
 }
 
@@ -33,7 +35,7 @@ function goBtnHandler() {
 
 // Display all contacts
 function displayAllContacts() {
-  let outputStr = '';
+  let outputStr = "";
   for (let i = 0; i < contacts.length; i++) {
     outputStr += getTaskHTMLStr(contacts[i], i);
   }
@@ -45,35 +47,53 @@ function addContact() {
   let email = prompt("Enter Contact Email:"); 
   let phone = prompt("Enter Contact Phone:");
   let country = prompt("Enter Contact Country:");
-  contacts.push(newContact(name, email, phone, country));
-  saveContacts();
-  outputEl.innerHTML = `New Contact Added (${name})`
+  if (findByEmail(email) === -1) {
+    contacts.push(newContact(name, email, phone, country));
+    saveContacts();
+    outputEl.innerHTML = `New Contact Added (${name})`
+  } else {
+    outputEl.innerHTML = "Email Already Exists";
+  }
 }
 
 function removeContact() {
-  let index = +prompt("Enter Contact Number:");
-  if (index >= 0 && index < contacts.length) {
+  let removeEmail = prompt("Enter Contact Email:");
+  let index = findByEmail(removeEmail);
+  if (index != -1) {
     contacts.splice(index, 1);
     saveContacts();
     displayAllContacts();
   } else {
-    outputEl.innerHTML = '<p style="color:red;"> Invalid Contact Number </p>';
+    outputEl.innerHTML = "Email Does Not Exist";
   }
 }
 
 function displayByName() {
-  let searchName = prompt("Enter Contact Name:")
+  let searchName = prompt("Enter Contact Name:");
   let outputName = "";
   for (i = 0; i < contacts.length; i++) {
-    if (contacts[i].name == searchName) {
+    if (contacts[i].name.includes(searchName)) {
       outputName += getTaskHTMLStr(contacts[i], i);
     }
-    outputEl.innerHTML = outputName;
   }
+  outputEl.innerHTML = outputName;
 }
 
 function displayByCountry() {
-  console.log('Display by Country');
+  let searchCountry = prompt("Enter Country Name:");
+  let outputCountry = "";
+  for (i = 0; i < contacts.length; i++) {
+    if (contacts[i].country === searchCountry) {
+      outputCountry += getTaskHTMLStr(contacts[i], i);
+    }
+  }
+  outputEl.innerHTML = outputCountry;
+}
+
+function displayByEmail() {
+  let searchEmail = prompt("Enter Email Name:");
+  let index = findByEmail(searchEmail);
+  outputEl.innerHTML = getTaskHTMLStr(contacts[index], index);
 }
 
 // HELPER FUNCTIONS
@@ -108,4 +128,15 @@ function saveContacts() {
 function loadContacts() {
   let contactsStr = localStorage.getItem("contacts");
   return JSON.parse(contactsStr) ?? [];
+}
+
+// Find by email
+function findByEmail(email) {
+  for (i = 0; i < contacts.length; i++) {
+    if (contacts[i].email == email) {
+      return i;
+    } else {
+      return -1;
+    }
+  }
 }
